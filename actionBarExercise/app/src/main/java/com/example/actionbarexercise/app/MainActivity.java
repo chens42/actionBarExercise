@@ -1,15 +1,16 @@
 package com.example.actionbarexercise.app;
 
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.FragmentTransaction;
-import android.app.TabActivity;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.widget.Spinner;
+
+import java.util.ArrayList;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
@@ -17,7 +18,8 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     private String[] tabs = {"Tab 1", "Tab 2", "Tab 3"};
-
+    private ArrayList<SpinnerItem> navSpinnerItem;
+    private TitleNavigationAdapter adapter;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -26,6 +28,21 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         ActionBar action = getActionBar();
         action.setCustomView(R.layout.actionbar_top); //load your layout
         action.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME|ActionBar.DISPLAY_SHOW_CUSTOM);
+
+
+        // Spinner title navigation data
+        navSpinnerItem = new ArrayList<SpinnerItem>();
+        navSpinnerItem.add(new SpinnerItem(1L));
+        navSpinnerItem.add(new SpinnerItem(2L));
+        navSpinnerItem.add(new SpinnerItem(3L));
+        navSpinnerItem.add(new SpinnerItem(4L));
+
+        // title drop down adapter
+        adapter = new TitleNavigationAdapter(getApplicationContext(), navSpinnerItem);
+        Spinner spinner = (Spinner) findViewById(R.id.display);
+        spinner.setAdapter(adapter);
+
+
 
         viewPager = (ViewPager) findViewById(R.id.pager);
         actionBar = getActionBar();
