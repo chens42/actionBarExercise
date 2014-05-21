@@ -3,6 +3,9 @@ package com.example.actionbarexercise.app;
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
@@ -48,19 +51,16 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         ActionBar action = getActionBar();
         action.setCustomView(R.layout.actionbar_top); //load your layout
         action.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME|ActionBar.DISPLAY_SHOW_CUSTOM);
-        new getContent().execute();
-
-
-/*
-        // Spinner title navigation data
-        navSpin = new ArrayList<Spin>();
-        navSpin.add(new Spin(1L));
-        navSpin.add(new Spin(2L));
-        navSpin.add(new Spin(3L));
-        navSpin.add(new Spin(4L));
-*/
-
-        // title drop down adapter
+        ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
+        if(mWifi.isConnected()){
+            new getContent().execute();
+        }else{
+            navSpin=helper.getPostDAO().queryForAll();
+            adapter = new TitleNavigationAdapter(getApplicationContext(), navSpin);
+            Spinner spinner = (Spinner) findViewById(R.id.display);
+            spinner.setAdapter(adapter);
+        }
 
 
 
@@ -121,9 +121,11 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 try {
                     spins = objectMapper.readValue(jsonStr, Spins.class);
-/*                    for ( Spin post:spins.getSpins()){
-                        helper.getPostDAO().create(post);
-                    }*/
+                    for ( Spin spin:spins.getSpins()){
+                        if(helper.getPostDAO().queryForId(spin.getId())==null){
+                            helper.getPostDAO().create(spin);
+                        }
+                    }
                     return spins;
                 } catch (IOException e) {
                     throw new RuntimeException(e);

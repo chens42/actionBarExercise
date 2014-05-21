@@ -30,13 +30,13 @@ public class DatabaseHelper extends OrmLiteSqliteOpenHelper {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, ConnectionSource connectionSource, int i, int i2) {
 
     }
+
     public RuntimeExceptionDao<Spin, Long> getPostDAO() {
         if (null == postDAO) {
             postDAO = getRuntimeExceptionDao(Spin.class);
