@@ -7,32 +7,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
-import android.widget.ImageView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
+import com.example.actionbarexercise.app.model.Spin;
+
+import java.util.List;
 
 public class TitleNavigationAdapter extends BaseAdapter {
 
-    private ImageView imgIcon;
     private TextView txtTitle;
-    private ArrayList<SpinnerItem> spinnerItemNavItem;
+    private List<Spin> spin;
     private Context context;
 
     public TitleNavigationAdapter(Context context,
-                                  ArrayList<SpinnerItem> spinnerItemNavItem) {
-        this.spinnerItemNavItem = spinnerItemNavItem;
+                                  List<Spin> spin) {
+        this.spin = spin;
         this.context = context;
     }
 
     @Override
     public int getCount() {
-        return spinnerItemNavItem.size();
+        return spin.size();
     }
 
     @Override
     public Object getItem(int index) {
-        return spinnerItemNavItem.get(index);
+        return spin.get(index);
     }
 
     @Override
@@ -49,7 +49,7 @@ public class TitleNavigationAdapter extends BaseAdapter {
         }
 
         txtTitle = (TextView) convertView.findViewById(R.id.idDisplay);
-        txtTitle.setText(""+ spinnerItemNavItem.get(position).getIdentify());
+        txtTitle.setText(""+ spin.get(position).getId());
         return convertView;
     }
 
@@ -63,7 +63,7 @@ public class TitleNavigationAdapter extends BaseAdapter {
         }
 
         txtTitle = (TextView) convertView.findViewById(R.id.idDisplay);
-        txtTitle.setText(""+ spinnerItemNavItem.get(position).getIdentify());
+        txtTitle.setText(""+ spin.get(position).getId());
         return convertView;
     }
 

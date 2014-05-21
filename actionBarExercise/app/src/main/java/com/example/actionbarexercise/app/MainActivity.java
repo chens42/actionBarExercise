@@ -2,45 +2,65 @@ package com.example.actionbarexercise.app;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
+import android.app.ProgressDialog;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.widget.Spinner;
 
-import java.util.ArrayList;
+import com.example.actionbarexercise.app.db.DatabaseHelper;
+import com.example.actionbarexercise.app.model.Spin;
+import com.example.actionbarexercise.app.model.Spins;
+
+import org.apache.http.HttpEntity;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpGet;
+import org.apache.http.impl.client.DefaultHttpClient;
+import org.apache.http.util.EntityUtils;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
+import java.util.List;
 
 
 public class MainActivity extends FragmentActivity implements ActionBar.TabListener {
+    private static String url = "https://raw.githubusercontent.com/chens42/android-practise/master/puppy/app/tumblr.json";
     private ViewPager viewPager;
     private TabsPagerAdapter mAdapter;
     private ActionBar actionBar;
     private String[] tabs = {"Tab 1", "Tab 2", "Tab 3"};
-    private ArrayList<SpinnerItem> navSpinnerItem;
+    private List<Spin> navSpin;
     private TitleNavigationAdapter adapter;
+    private Spins spins= null;
+    DatabaseHelper helper = null;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        helper=new DatabaseHelper(getApplicationContext());
 
         ActionBar action = getActionBar();
         action.setCustomView(R.layout.actionbar_top); //load your layout
         action.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME|ActionBar.DISPLAY_SHOW_CUSTOM);
+        new getContent().execute();
 
 
+/*
         // Spinner title navigation data
-        navSpinnerItem = new ArrayList<SpinnerItem>();
-        navSpinnerItem.add(new SpinnerItem(1L));
-        navSpinnerItem.add(new SpinnerItem(2L));
-        navSpinnerItem.add(new SpinnerItem(3L));
-        navSpinnerItem.add(new SpinnerItem(4L));
+        navSpin = new ArrayList<Spin>();
+        navSpin.add(new Spin(1L));
+        navSpin.add(new Spin(2L));
+        navSpin.add(new Spin(3L));
+        navSpin.add(new Spin(4L));
+*/
 
         // title drop down adapter
-        adapter = new TitleNavigationAdapter(getApplicationContext(), navSpinnerItem);
-        Spinner spinner = (Spinner) findViewById(R.id.display);
-        spinner.setAdapter(adapter);
 
 
 
@@ -74,6 +94,53 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             }
         });
 
+    }
+
+
+    public class getContent extends AsyncTask<Void, Void, Spins> {
+
+
+        @Override
+        protected Spins doInBackground(Void... params) {
+            DefaultHttpClient httpClient = new DefaultHttpClient();
+            HttpGet httpGet = new HttpGet(url);
+            HttpResponse httpResponse;
+            HttpEntity httpEntity;
+            String jsonStr = null;
+
+            try {
+                httpResponse = httpClient.execute(httpGet);
+                httpEntity = httpResponse.getEntity();
+                jsonStr = EntityUtils.toString(httpEntity);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Log.e("size:",""+(jsonStr==null));
+            if (jsonStr != null) {
+                ObjectMapper objectMapper = new ObjectMapper();
+                objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+                try {
+                    spins = objectMapper.readValue(jsonStr, Spins.class);
+/*                    for ( Spin post:spins.getSpins()){
+                        helper.getPostDAO().create(post);
+                    }*/
+                    return spins;
+                } catch (IOException e) {
+                    throw new RuntimeException(e);
+                }
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Spins spins) {
+            super.onPostExecute(spins);
+            navSpin=spins.getSpins();
+            adapter = new TitleNavigationAdapter(getApplicationContext(), navSpin);
+            Spinner spinner = (Spinner) findViewById(R.id.display);
+            spinner.setAdapter(adapter);
+
+        }
     }
 
 
