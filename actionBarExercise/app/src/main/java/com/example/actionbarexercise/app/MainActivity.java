@@ -2,21 +2,25 @@ package com.example.actionbarexercise.app;
 
 import android.app.ActionBar;
 import android.app.FragmentTransaction;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.view.ViewPager;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.Spinner;
+import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.actionbarexercise.app.db.DatabaseHelper;
+import com.example.actionbarexercise.app.fragment.TabFragment;
 import com.example.actionbarexercise.app.model.Spin;
 import com.example.actionbarexercise.app.model.Spins;
 
@@ -40,28 +44,28 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private String[] tabs = {"Tab 1", "Tab 2", "Tab 3"};
     private List<Spin> navSpin;
     private TitleNavigationAdapter adapter;
-    private Spins spins= null;
+    private Spins spins = null;
     DatabaseHelper helper = null;
+    private int currentPage;
+    private Spinner spinner;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        helper=new DatabaseHelper(getApplicationContext());
-
+        helper = new DatabaseHelper(getApplicationContext());
         ActionBar action = getActionBar();
-        action.setCustomView(R.layout.actionbar_top); //load your layout
-        action.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME|ActionBar.DISPLAY_SHOW_CUSTOM);
+        action.setCustomView(R.layout.actionbar_top);
+        spinner = (Spinner) action.getCustomView().findViewById(R.id.display);
+        action.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
         ConnectivityManager connManager = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo mWifi = connManager.getNetworkInfo(ConnectivityManager.TYPE_WIFI);
-        if(mWifi.isConnected()){
-            new getContent().execute();
-        }else{
-            navSpin=helper.getPostDAO().queryForAll();
-            adapter = new TitleNavigationAdapter(getApplicationContext(), navSpin);
-            Spinner spinner = (Spinner) findViewById(R.id.display);
-            spinner.setAdapter(adapter);
+        if (mWifi.isConnected()) {
+            new PostFetchingAsyncTask().execute();
         }
-
+        navSpin = helper.getPostDAO().queryForAll();
+        adapter = new TitleNavigationAdapter(getApplicationContext(), navSpin);
+        spinner.setAdapter(adapter);
 
 
         viewPager = (ViewPager) findViewById(R.id.pager);
@@ -72,14 +76,31 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
         actionBar.setHomeButtonEnabled(false);
         actionBar.setNavigationMode(ActionBar.NAVIGATION_MODE_TABS);
 
-        for (String tab_name : tabs) {
-            actionBar.addTab(actionBar.newTab().setText(tab_name)
+        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                TextView textView = new TextView(getApplicationContext());
+                textView.setText(navSpin.get(position).getPhotoUrl1280());
+
+
+                TabFragment item = (TabFragment) mAdapter.getItem(viewPager.getCurrentItem());
+
+                item.addTextView(textView);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> parent) {
+
+            }
+        });
+
+        for (String tabName : tabs) {
+            actionBar.addTab(actionBar.newTab().setText(tabName)
                     .setTabListener(this));
         }
         viewPager.setOnPageChangeListener(new ViewPager.OnPageChangeListener() {
             @Override
             public void onPageScrolled(int i, float v, int i2) {
-
             }
 
             @Override
@@ -96,10 +117,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
     }
 
-
-    public class getContent extends AsyncTask<Void, Void, Spins> {
-
-
+    public class PostFetchingAsyncTask extends AsyncTask<Void, Void, Spins> {
         @Override
         protected Spins doInBackground(Void... params) {
             DefaultHttpClient httpClient = new DefaultHttpClient();
@@ -115,14 +133,13 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Log.e("size:",""+(jsonStr==null));
             if (jsonStr != null) {
                 ObjectMapper objectMapper = new ObjectMapper();
                 objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
                 try {
                     spins = objectMapper.readValue(jsonStr, Spins.class);
-                    for ( Spin spin:spins.getSpins()){
-                        if(helper.getPostDAO().queryForId(spin.getId())==null){
+                    for (Spin spin : spins.getSpins()) {
+                        if (helper.getPostDAO().queryForId(spin.getId()) == null) {
                             helper.getPostDAO().create(spin);
                         }
                     }
@@ -132,16 +149,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
                 }
             }
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Spins spins) {
-            super.onPostExecute(spins);
-            navSpin=spins.getSpins();
-            adapter = new TitleNavigationAdapter(getApplicationContext(), navSpin);
-            Spinner spinner = (Spinner) findViewById(R.id.display);
-            spinner.setAdapter(adapter);
-
         }
     }
 

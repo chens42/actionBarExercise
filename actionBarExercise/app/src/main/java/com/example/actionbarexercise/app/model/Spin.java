@@ -14,6 +14,10 @@ public class Spin {
     @DatabaseField(id = true)
     public Long id;
 
+    public String getPhotoUrl1280() {
+        return photoUrl1280;
+    }
+
     @JsonProperty("photo-url-1280")
     @DatabaseField
     private String photoUrl1280;
