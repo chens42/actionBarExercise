@@ -7,14 +7,19 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
+import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
+import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -49,10 +54,39 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private int currentPage;
     private Spinner spinner;
 
+    private String[] drawerListViewItems;
+    private DrawerLayout drawerLayout;
+    private ListView drawerListView;
+    private ActionBarDrawerToggle actionBarDrawerToggle;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
+
+        drawerListViewItems = getResources().getStringArray(R.array.items);
+        drawerListView = (ListView) findViewById(R.id.left_drawer);
+        drawerListView.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_listview_item, drawerListViewItems));
+        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        actionBarDrawerToggle = new ActionBarDrawerToggle(
+                this,                  /* host Activity */
+                drawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_launcher,  /* nav drawer icon to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description */
+                R.string.drawer_close  /* "close drawer" description */
+        );
+        drawerLayout.setDrawerListener(actionBarDrawerToggle);
+        getActionBar().setDisplayHomeAsUpEnabled(true);
+
+        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+
+
+
+
+
         helper = new DatabaseHelper(getApplicationContext());
         ActionBar action = getActionBar();
         action.setCustomView(R.layout.actionbar_top);
@@ -114,6 +148,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
 
             }
         });
+
 
     }
 
@@ -184,5 +219,12 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction ft) {
 
     }
+    private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView parent, View view, int position, long id) {
+            Toast.makeText(MainActivity.this, ((TextView)view).getText(), Toast.LENGTH_LONG).show();
+            drawerLayout.closeDrawer(drawerListView);
 
+        }
+    }
 }
