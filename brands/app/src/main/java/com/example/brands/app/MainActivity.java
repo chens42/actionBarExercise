@@ -2,11 +2,11 @@ package com.example.brands.app;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -16,91 +16,49 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.brands.app.db.DatabaseHelper;
 import com.example.brands.app.model.Product;
+import com.example.brands.app.model.Products;
+import com.j256.ormlite.dao.RuntimeExceptionDao;
 
-import java.util.ArrayList;
+import org.codehaus.jackson.map.DeserializationConfig;
+import org.codehaus.jackson.map.ObjectMapper;
+
+import java.io.IOException;
 import java.util.Arrays;
 import java.util.List;
 
 
 public class MainActivity extends Activity {
-    List<String> list = Arrays.asList("watch","car");
+    List<String> list = Arrays.asList("watch", "car");
     private String[] drawerListViewItems;
     private DrawerLayout drawerLayout;
     private ListView drawerListView;
     private ActionBarDrawerToggle actionBarDrawerToggle;
-    private DatabaseHelper helper=null;
-    private List<Product> listofProduct;
-
-
+    private DatabaseHelper helper = null;
+    private List<Product> listOfProduct;
+    private Products products;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         helper = new DatabaseHelper(getApplicationContext());
         setContentView(R.layout.activity_main);
-        ActionBar actionBar = getActionBar();
-        actionBar.setCustomView(R.layout.action_bar_top);
-        Spinner spinner = (Spinner) actionBar.getCustomView().findViewById(R.id.typeSpinner);
-        actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_HOME | ActionBar.DISPLAY_SHOW_CUSTOM);
 
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(this, R.layout.spinner_item,list);
-        spinner.setAdapter(adapter);
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-            @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                switch (position){
-                    case 0:
-                        listofProduct=helper.getPostDAO().queryForEq("type","watch");
-                        break;
-                    case 1:
-                        listofProduct=helper.getPostDAO().queryForEq("type","car");
-                        break;
-                }
-                drawerListViewItems=new String[listofProduct.size()];
-                for(int i = 0 ; i<listofProduct.size();i++){
-                    drawerListViewItems[i]=listofProduct.get(i).getName();
-                }
-                drawerListView.setAdapter(new ArrayAdapter<String>(MainActivity.this,
-                        R.layout.drawer_listview_item, drawerListViewItems));
-            }
-            @Override
-            public void onNothingSelected(AdapterView<?> parent) {
-            }
-        });
+        new GetContacts().execute();
 
-
-        drawerListViewItems = getResources().getStringArray(R.array.items);
-        drawerListView = (ListView) findViewById(R.id.left_drawer);
-        drawerListView.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_listview_item, drawerListViewItems));
-        // 2. App Icon
-        drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        actionBarDrawerToggle = new ActionBarDrawerToggle(
-                this,                  /* host Activity */
-                drawerLayout,         /* DrawerLayout object */
-                R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
-                R.string.drawer_open,  /* "open drawer" description */
-                R.string.drawer_close  /* "close drawer" description */
-        );
-        drawerLayout.setDrawerListener(actionBarDrawerToggle);
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-        drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
-        drawerListView.setOnItemClickListener(new DrawerItemClickListener());
     }
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
             TextView textView = (TextView) findViewById(R.id.articleDisplay);
-            textView.setText(listofProduct.get(position).getArticle());
+            textView.setText(listOfProduct.get(position).getArticle());
             drawerLayout.closeDrawer(drawerListView);
 
         }
     }
-
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -118,5 +76,84 @@ public class MainActivity extends Activity {
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private class GetContacts extends AsyncTask<Void, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Void... params) {
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
+
+            try {
+                products = objectMapper.readValue(getAssets().open("Json.json"), Products.class);
+                listOfProduct = products.getProducts();
+
+                for (Product product : listOfProduct) {
+                    helper.getPostDAO().create(product);
+                }
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            ActionBar actionBar = getActionBar();
+            actionBar.setCustomView(R.layout.action_bar_top);
+            Spinner spinner = (Spinner) actionBar.getCustomView().findViewById(R.id.typeSpinner);
+            actionBar.setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM | ActionBar.DISPLAY_SHOW_HOME);
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setHomeButtonEnabled(true);
+
+            ArrayAdapter<String> adapter = new ArrayAdapter<String>(MainActivity.this, R.layout.spinner_item, list);
+            spinner.setAdapter(adapter);
+            spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                @Override
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    RuntimeExceptionDao<Product, Long> postDAO = helper.getPostDAO();
+                    switch (position) {
+                        case 0:
+                            listOfProduct = postDAO.queryForEq("type", "watch");
+                            break;
+                        case 1:
+                            listOfProduct = postDAO.queryForEq("type", "car");
+                            break;
+                    }
+                    drawerListViewItems = new String[listOfProduct.size()];
+                    for (int i = 0; i < listOfProduct.size(); i++) {
+                        drawerListViewItems[i] = listOfProduct.get(i).getName();
+                    }
+                    drawerListView.setAdapter(new ArrayAdapter<String>(MainActivity.this,
+                            R.layout.drawer_listview_item, drawerListViewItems));
+                }
+
+                @Override
+                public void onNothingSelected(AdapterView<?> parent) {
+                }
+            });
+
+
+            drawerListViewItems = getResources().getStringArray(R.array.items);
+            drawerListView = (ListView) findViewById(R.id.left_drawer);
+            drawerListView.setAdapter(new ArrayAdapter<String>(MainActivity.this,
+                    R.layout.drawer_listview_item, drawerListViewItems));
+            // 2. App Icon
+            drawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+            actionBarDrawerToggle = new ActionBarDrawerToggle(
+                    MainActivity.this,                  /* host Activity */
+                    drawerLayout,         /* DrawerLayout object */
+                    R.drawable.ic_drawer,  /* nav drawer icon to replace 'Up' caret */
+                    R.string.drawer_open,  /* "open drawer" description */
+                    R.string.drawer_close  /* "close drawer" description */
+            );
+            drawerLayout.setDrawerListener(actionBarDrawerToggle);
+            drawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+            drawerListView.setOnItemClickListener(new DrawerItemClickListener());
+        }
     }
 }

@@ -2,16 +2,19 @@ package com.example.brands.app.model;
 
 import com.j256.ormlite.field.DatabaseField;
 
+import org.codehaus.jackson.annotate.JsonProperty;
+
 /**
  * Created by shaojin on 23/05/14.
  */
 public class Product {
+    @JsonProperty("name")
     @DatabaseField
     private String name;
-
+    @JsonProperty("article")
     @DatabaseField
     private String article;
-
+    @JsonProperty("type")
     @DatabaseField
     private String type;
 
