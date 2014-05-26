@@ -7,11 +7,24 @@
     <FrameLayout
         android:layout_width="fill_parent"
         android:layout_height="fill_parent">
-        <TextView
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:id="@+id/articleDisplay"/>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+            <fragment
+                android:id="@+id/imageFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                class="com.example.brands.app.ImageFragment"/>
+            <fragment
+                android:id="@+id/articleFragment"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="1"
+                class="com.example.brands.app.ArticleFragment"/>
 
+        </LinearLayout>
         </FrameLayout>
     <ListView
         android:id="@+id/left_drawer"

@@ -2,6 +2,7 @@ package com.example.brands.app;
 
 import android.app.ActionBar;
 import android.app.Activity;
+import android.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
@@ -13,6 +14,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -30,7 +32,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements ImageFragment.OnItemSelectedListener{
     List<String> list = Arrays.asList("watch", "car");
     private String[] drawerListViewItems;
     private DrawerLayout drawerLayout;
@@ -39,6 +41,7 @@ public class MainActivity extends Activity {
     private DatabaseHelper helper = null;
     private List<Product> listOfProduct;
     private Products products;
+    private Product store;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,14 +50,42 @@ public class MainActivity extends Activity {
         setContentView(R.layout.activity_main);
 
         new GetContacts().execute();
-
     }
 
+    @Override
+    public void onRssItemSelected(String link) {
+        ArticleFragment fragment = (ArticleFragment) getFragmentManager().findFragmentById(R.id.articleFragment);
+        fragment.setText(link);
+    }
+
+
+
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
+        private ImageView logo= (ImageView) getFragmentManager().findFragmentById(R.id.imageFragment).getView().findViewById(R.id.logoImage);
+        private Product product;
+
+
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            TextView textView = (TextView) findViewById(R.id.articleDisplay);
-            textView.setText(listOfProduct.get(position).getArticle());
+            ArticleFragment articleFragment = (ArticleFragment) getFragmentManager().findFragmentById(R.id.articleFragment);
+            articleFragment.setText("");
+            ImageFragment imageFragment = (ImageFragment) getFragmentManager().findFragmentById(R.id.imageFragment);
+            product = listOfProduct.get(position);
+            imageFragment.setProduct(product);
+            if(listOfProduct.get(0).getType().equals("watch")){
+                store = listOfProduct.get(position);
+                switch (position){
+                    case 0 :
+                        logo.setImageResource(R.drawable.omega);
+                        break;
+                }
+            }else{
+                switch (position){
+                    case 0 :
+                        logo.setImageResource(R.drawable.ford);
+                        break;
+                }
+            }
             drawerLayout.closeDrawer(drawerListView);
 
         }
@@ -82,7 +113,7 @@ public class MainActivity extends Activity {
 
         @Override
         protected Void doInBackground(Void... params) {
-
+/*
             ObjectMapper objectMapper = new ObjectMapper();
             objectMapper.configure(DeserializationConfig.Feature.FAIL_ON_UNKNOWN_PROPERTIES, false);
 
@@ -95,7 +126,7 @@ public class MainActivity extends Activity {
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
-            }
+            }*/
 
             return null;
         }
