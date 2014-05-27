@@ -58,22 +58,27 @@ public class MainActivity extends Activity implements ImageFragment.OnItemSelect
         fragment.setText(link);
     }
 
+    @Override
+    public Product passObject() {
+        return store;
+    }
 
 
     private class DrawerItemClickListener implements ListView.OnItemClickListener {
         private ImageView logo= (ImageView) getFragmentManager().findFragmentById(R.id.imageFragment).getView().findViewById(R.id.logoImage);
+        private TextView descriptionTextView= (TextView) getFragmentManager().findFragmentById(R.id.articleFragment).getView().findViewById(R.id.article);
         private Product product;
 
 
         @Override
         public void onItemClick(AdapterView parent, View view, int position, long id) {
-            ArticleFragment articleFragment = (ArticleFragment) getFragmentManager().findFragmentById(R.id.articleFragment);
+/*            ArticleFragment articleFragment = (ArticleFragment) getFragmentManager().findFragmentById(R.id.articleFragment);
             articleFragment.setText("");
-            ImageFragment imageFragment = (ImageFragment) getFragmentManager().findFragmentById(R.id.imageFragment);
+            ImageFragment imageFragment = (ImageFragment) getFragmentManager().findFragmentById(R.id.imageFragment);*/
             product = listOfProduct.get(position);
-            imageFragment.setProduct(product);
+//            imageFragment.setProduct(product);
+            store=listOfProduct.get(position);
             if(listOfProduct.get(0).getType().equals("watch")){
-                store = listOfProduct.get(position);
                 switch (position){
                     case 0 :
                         logo.setImageResource(R.drawable.omega);
@@ -86,6 +91,7 @@ public class MainActivity extends Activity implements ImageFragment.OnItemSelect
                         break;
                 }
             }
+            descriptionTextView.setText("");
             drawerLayout.closeDrawer(drawerListView);
 
         }

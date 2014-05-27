@@ -3,6 +3,7 @@ package com.example.brands.app;
 import android.app.Activity;
 import android.app.Fragment;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,6 +19,7 @@ public class ImageFragment extends Fragment {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                product=listener.passObject();
                 if(product !=null)
                     listener.onRssItemSelected(product.getArticle()+"");
             }
@@ -27,13 +29,13 @@ public class ImageFragment extends Fragment {
 
     public interface OnItemSelectedListener {
         public void onRssItemSelected(String link);
+        public Product passObject();
     }
 
     @Override
     public void onAttach(Activity activity) {
         super.onAttach(activity);
         listener= (OnItemSelectedListener) activity;
-
     }
 
     public void setProduct(Product product) {
