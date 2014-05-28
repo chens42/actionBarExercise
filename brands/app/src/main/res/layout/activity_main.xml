@@ -2,53 +2,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.example.brands.app.MainActivity"
+    tools:context="com.example.brands.app.activity.MainActivity"
     android:id="@+id/drawer_layout">
     <FrameLayout
         android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical">
-            <fragment
-                android:id="@+id/imageFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                class="com.example.brands.app.ImageFragment"/>
-            <fragment
-                android:id="@+id/articleFragment"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
-                class="com.example.brands.app.ArticleFragment"/>
-
-        </LinearLayout>
-        </FrameLayout>
-    <ListView
-        android:id="@+id/left_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="start"
-        android:choiceMode="singleChoice"
-        android:divider="#666"
-        android:dividerHeight="1dp"
-        android:background="#333"
-        android:paddingLeft="15sp"
-        android:paddingRight="15sp"
-       />
-  <!--  <ListView
-        android:id="@+id/right_drawer"
-        android:layout_width="240dp"
-        android:layout_height="match_parent"
-        android:layout_gravity="end"
-        android:choiceMode="singleChoice"
-        android:divider="#666"
-        android:dividerHeight="1dp"
-        android:background="#333"
-        android:paddingLeft="15sp"
-        android:paddingRight="15sp"
-        />-->
-
+        android:layout_height="fill_parent"
+        android:id="@+id/fragment_container"/>
 </android.support.v4.widget.DrawerLayout>
