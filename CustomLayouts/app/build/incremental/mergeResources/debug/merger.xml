@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<merger>
+
+    <dataSet config="main" >
+        <source path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res" >
+            <file
+                name="main_menu"
+                path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/menu/main_menu.xml"
+                qualifiers=""
+                type="menu" />
+            <file
+                path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/values/strings.xml"
+                qualifiers="" >
+                <attr
+                    name="a1"
+                    format="integer" />
+
+                <declare-styleable name="SomeArbitraryName" >
+                    <attr name="a1" />
+                    <attr
+                        name="a2"
+                        format="string" />
+                    <attr
+                        name="custom_text"
+                        format="string" />
+                </declare-styleable>
+
+                <item
+                    name="menu_da_clear"
+                    type="id"/>
+            </file>
+            <file
+                path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/values/attrs.xml"
+                qualifiers="" >
+                <declare-styleable name="FlowLayout_Layout" >
+                    <attr
+                        name="layout_space"
+                        format="dimension" />
+                </declare-styleable>
+                <declare-styleable name="FlowLayout" >
+                    <attr
+                        name="hspace"
+                        format="dimension" />
+                    <attr
+                        name="vspace"
+                        format="dimension" />
+                </declare-styleable>
+            </file>
+            <file
+                name="debug_activity_layout"
+                path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/layout/debug_activity_layout.xml"
+                qualifiers=""
+                type="layout" />
+            <file
+                name="icon"
+                path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/drawable/icon.png"
+                qualifiers=""
+                type="drawable" />
+            <file
+                name="robot"
+                path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/drawable/robot.png"
+                qualifiers=""
+                type="drawable" />
+        </source>
+        <source path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/build/res/rs/debug" />
+        <source path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/build/res/generated/debug" />
+    </dataSet>
+    <dataSet config="debug" >
+        <source path="/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/debug/res" />
+    </dataSet>
+
+</merger>

@@ -1,0 +1,9 @@
+<resources>
+<item type="id" name="menu_da_clear"/>
+<attr name="a1" format="integer"></attr>
+<declare-styleable name="SomeArbitraryName">
+    <attr name="a1"/>
+    <attr name="a2" format="string" />
+    <attr name="custom_text" format="string"/>
+</declare-styleable>
+</resources>

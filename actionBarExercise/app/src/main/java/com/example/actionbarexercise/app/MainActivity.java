@@ -8,9 +8,7 @@ import android.net.NetworkInfo;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActionBarDrawerToggle;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.view.GravityCompat;
 import android.support.v4.view.ViewPager;
 import android.support.v4.widget.DrawerLayout;
 import android.view.Menu;
@@ -51,7 +49,6 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     private TitleNavigationAdapter adapter;
     private Spins spins = null;
     DatabaseHelper helper = null;
-    private int currentPage;
     private Spinner spinner;
 
     private String[] drawerListViewItems;
@@ -192,6 +189,7 @@ public class MainActivity extends FragmentActivity implements ActionBar.TabListe
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main_activity_actions, menu);
+
         return super.onCreateOptionsMenu(menu);
     }
 

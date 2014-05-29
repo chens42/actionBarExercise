@@ -1,0 +1,9 @@
+<resources>
+<declare-styleable name="FlowLayout">
+    <attr name="hspace" format="dimension"/>
+    <attr name="vspace" format="dimension" />
+</declare-styleable>
+<declare-styleable name="FlowLayout_Layout">
+    <attr name="layout_space" format="dimension"/>
+</declare-styleable>
+</resources>

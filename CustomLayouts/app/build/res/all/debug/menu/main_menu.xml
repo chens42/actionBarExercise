@@ -1,0 +1,10 @@
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <!-- This group uses the default category. -->
+    <group android:id="@+id/menuGroup_Main">
+        <item android:id="@+id/menu_no_op"
+            android:title="No Op" />
+            
+        <item android:id="@id/menu_da_clear"
+         android:title="clear" />
+    </group>
+</menu><!-- From: file:/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/menu/main_menu.xml -->

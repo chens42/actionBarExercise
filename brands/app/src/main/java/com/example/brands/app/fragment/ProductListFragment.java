@@ -19,7 +19,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ProductListFragment extends Fragment {
-    public static String state="";
+
 
     public static final String FRAGMENT_ARGUMENT_PRODUCT_LIST = "productList";
 
@@ -30,7 +30,7 @@ public class ProductListFragment extends Fragment {
         ListView listView = (ListView) view.findViewById(R.id.listview);
         Bundle arguments = getArguments();
         Parcelable[] parcelableArray = arguments.getParcelableArray(FRAGMENT_ARGUMENT_PRODUCT_LIST);
-        state=getTag();
+
         final List<Product> products = new ArrayList<Product>(parcelableArray.length);
         for (Parcelable parcelable : parcelableArray) {
             products.add((Product) parcelable);
@@ -42,7 +42,6 @@ public class ProductListFragment extends Fragment {
 
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                state=products.get(position).getType();
                 Toast.makeText(getActivity(), position + ":" + id, Toast.LENGTH_SHORT).show();
                 Bundle bundle = new Bundle();
                 bundle.putParcelable(DescriptionFragment.FRAGMENT_ARGUMENT_PRODUCT, products.get(position));

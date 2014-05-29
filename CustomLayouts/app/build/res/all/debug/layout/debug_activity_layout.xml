@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:cc="http://schemas.android.com/apk/res/com.androidbook.customLayouts"    
+    android:orientation="vertical"
+    android:layout_width="fill_parent"
+    android:layout_height="match_parent"
+    >
+<TextView  
+	android:id="@+id/text2"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="Welcome to the Flow Layout"
+    />
+<com.androidbook.customLayouts.FlowLayout
+   android:id="@+id/durationControlId"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content"
+    cc:hspace="10dp"
+    cc:vspace="10dp"
+    >
+	<Button android:text="Button1"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+	    cc:layout_space="20dp"
+    />
+	<Button android:text="Button2"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="Button3"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="Button4"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="Button5"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="B1"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="B2"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="B3"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="B4"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+	<Button android:text="B5"
+	    android:layout_width="wrap_content" 
+	    android:layout_height="wrap_content"
+    />
+</com.androidbook.customLayouts.FlowLayout>
+ 
+<TextView  
+	android:id="@+id/text1"
+    android:layout_width="fill_parent" 
+    android:layout_height="wrap_content" 
+    android:text="Scratch for debug text"
+    />
+</LinearLayout>
+
+<!-- From: file:/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/layout/debug_activity_layout.xml -->

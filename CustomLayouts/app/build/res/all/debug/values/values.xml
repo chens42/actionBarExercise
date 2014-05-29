@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <!-- From: file:/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/values/strings.xml -->
+    <eat-comment />
+
+    <attr name="a1" format="integer" />
+    <!-- From: file:/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/values/attrs.xml -->
+    <eat-comment />
+
+    <declare-styleable name="FlowLayout">
+        <attr name="hspace" format="dimension" />
+        <attr name="vspace" format="dimension" />
+    </declare-styleable>
+    <declare-styleable name="FlowLayout_Layout">
+        <attr name="layout_space" format="dimension" />
+    </declare-styleable>
+    <!-- From: file:/home/shaojin/dev/android-project/project/actionBarExercise/actionBarExercise.git/CustomLayouts/app/src/main/res/values/strings.xml -->
+    <eat-comment />
+
+    <declare-styleable name="SomeArbitraryName">
+        <attr name="a1" />
+        <attr name="a2" format="string" />
+        <attr name="custom_text" format="string" />
+    </declare-styleable>
+
+    <item name="menu_da_clear" type="id"/>
+
+</resources>
